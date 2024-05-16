@@ -38,9 +38,9 @@ pipeline {
 
                     // Define o caminho para o Jenkinsfile apropriado baseado no runtime
                     if (runtime == 'python') {
-                        env.PIPELINE_PATH = "${env.WORKSPACE}Pipelines/python-pipeline/Jenkinsfile"
+                        env.PIPELINE_PATH = "${env.WORKSPACE}/Pipelines/python-pipeline/Jenkinsfile"
                     } else if (runtime == 'node') {
-                        env.PIPELINE_PATH = "${env.WORKSPACE}Pipelines/react-pipeline/Jenkinsfile"
+                        env.PIPELINE_PATH = "${env.WORKSPACE}/Pipelines/react-pipeline/Jenkinsfile"
                     } else {
                         error "Unsupported runtime: ${runtime}"
                     }

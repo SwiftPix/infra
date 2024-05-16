@@ -9,7 +9,7 @@ pipeline {
                 script {
                     // Assumindo que o caminho do workspace segue o padrão '.../jobs/{org}/jobs/{repo}/branches/{branch}/workspace'
                     def workspaceParts = env.WORKSPACE.tokenize('/')
-                    def service = workspaceParts[workspaceParts.size() - 3]
+                    def service = workspaceParts[workspaceParts.size() - 4]
                     env.SERVICE = service
                     echo "Service deduced: ${service}"
                 }

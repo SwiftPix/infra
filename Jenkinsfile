@@ -12,7 +12,7 @@ pipeline {
                 script {
                     // Assumindo que a URL do repositório segue o padrão 'https://github.com/SwiftPix/{repo-name}.git'
                     def repoUrlParts = env.RJPP_SCM_URL.tokenize('/')
-                    def service = repoUrlParts[repoUrlParts.size() - 1].replace('.git', '')
+                    def service = repoUrlParts[repoUrlParts.size() - 5].replace('.git', '')
                     env.SERVICE = service
                     echo "Service deduced: ${service}"
                     echo "${env.RJPP_SCM_URL}"

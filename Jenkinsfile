@@ -1,14 +1,27 @@
 pipeline {
     agent any
-    parameters {
-        string(name: 'SERVICE', defaultValue: '', description: 'The service that triggered the build')
-        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Branch name')
+    environment {
+        RJPP_SCM_URL = "${env.RJPP_SCM_URL}"
+        RJPP_JENKINSFILE = "${env.RJPP_JENKINSFILE}"
+        RJPP_BRANCH = "${env.RJPP_BRANCH}"
+        RJPP_LOCAL_MARKER = "${env.RJPP_LOCAL_MARKER}"
     }
     stages {
+        stage('Determine Service') {
+            steps {
+                script {
+                    // Assumindo que a URL do repositório segue o padrão 'https://github.com/SwiftPix/{repo-name}.git'
+                    def repoUrlParts = env.RJPP_SCM_URL.tokenize('/')
+                    def service = repoUrlParts[repoUrlParts.size() - 1].replace('.git', '')
+                    env.SERVICE = service
+                    echo "Service deduced: ${service}"
+                }
+            }
+        }
         stage('Checkout Infra') {
             steps {
                 script {
-                    git branch: 'main', url: 'https://github.com/SwiftPix/Infra'
+                    git branch: "${env.RJPP_BRANCH}", url: 'https://github.com/SwiftPix/Infra'
                 }
             }
         }
@@ -16,7 +29,7 @@ pipeline {
             steps {
                 script {
                     // Read the environment configuration
-                    def envConfig = readYaml file: "${params.SERVICE}/dev.yaml"
+                    def envConfig = readYaml file: "${env.SERVICE}/dev.yaml"
                     def runtime = envConfig.runtime
 
                     // Set the path to the appropriate Jenkinsfile based on the runtime
@@ -35,8 +48,8 @@ pipeline {
                 script {
                     // Run the appropriate Jenkinsfile
                     build job: env.PIPELINE_PATH, parameters: [
-                        string(name: 'SERVICE', value: params.SERVICE),
-                        string(name: 'BRANCH_NAME', value: params.BRANCH_NAME)
+                        string(name: 'SERVICE', value: env.SERVICE),
+                        string(name: 'BRANCH_NAME', value: env.RJPP_BRANCH)
                     ]
                 }
             }

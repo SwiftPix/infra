@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    parameters {
-        string(name: 'SERVICE', defaultValue: '', description: 'The service that triggered the build')
-        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Branch name')
-    }
     stages {
         stage('Checkout Infra') {
             steps {
@@ -12,11 +8,16 @@ pipeline {
                 }
             }
         }
-        stage('Determine Pipeline') {
+        stage('Determine Service and Pipeline') {
             steps {
                 script {
+                    def repoUrlParts = env.RJPP_SCM_URL.tokenize('/')
+                    def service = repoUrlParts[repoUrlParts.size() - 1].replace('.git', '')
+                    env.SERVICE = service
+                    echo "Service deduced: ${service}"
+
                     // Read the environment configuration
-                    def envConfig = readYaml file: "${params.SERVICE}/dev.yaml"
+                    def envConfig = readYaml file: "${service}/dev.yaml"
                     def runtime = envConfig.runtime
 
                     // Set the path to the appropriate Jenkinsfile based on the runtime
@@ -35,8 +36,8 @@ pipeline {
                 script {
                     // Run the appropriate Jenkinsfile
                     build job: env.PIPELINE_PATH, parameters: [
-                        string(name: 'SERVICE', value: params.SERVICE),
-                        string(name: 'BRANCH_NAME', value: params.BRANCH_NAME)
+                        string(name: 'SERVICE', value: env.SERVICE),
+                        string(name: 'BRANCH_NAME', value: env.RJPP_BRANCH)
                     ]
                 }
             }

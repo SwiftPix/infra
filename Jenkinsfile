@@ -15,6 +15,10 @@ pipeline {
                     def service = repoUrlParts[repoUrlParts.size() - 1].replace('.git', '')
                     env.SERVICE = service
                     echo "Service deduced: ${service}"
+                    echo "${env.RJPP_SCM_URL}"
+                    echo "${env.RJPP_JENKINSFILE}"
+                    echo "${env.RJPP_BRANCH}"
+                    echo "${env.RJPP_LOCAL_MARKER}"
                 }
             }
         }

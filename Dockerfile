@@ -1,19 +1,13 @@
-# Use a imagem base do Nginx
+# Dockerfile
+
 FROM nginx:alpine
 
-# Ajuste as permissões necessárias durante a construção da imagem
-USER root
+WORKDIR /etc/nginx
 
-# Crie os diretórios necessários com as permissões adequadas
-RUN mkdir -p /var/cache/nginx/client_temp \
-    && chmod 755 /var/cache/nginx/client_temp \
-    && chown nginx:nginx /var/cache/nginx/client_temp
+# Copy the custom nginx.conf to the container
+COPY nginx.conf nginx.conf
 
-# Copie o arquivo de configuração personalizado do Nginx
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Exponha a porta 80 para o tráfego externo
 EXPOSE 80
 
-# Defina o comando de entrada padrão para iniciar o Nginx
-CMD ["nginx", "-g", "daemon off;"]
+ENTRYPOINT ["nginx"]
+CMD ["-g", "daemon off;"]

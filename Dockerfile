@@ -1,17 +1,11 @@
+# Use the official NGINX image from Docker Hub
 FROM nginx:latest
 
-# Ensure nginx can write to necessary directories
-RUN mkdir -p /var/cache/nginx/client_temp \
-    && chown -R nginx:nginx /var/cache/nginx
-
-# Set correct permissions
-RUN chmod -R 755 /var/cache/nginx
-
-# Copy nginx configuration files
+# Copy your custom nginx.conf to the container
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY default.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+# Expose port 8080 (where NGINX will listen for incoming requests)
+EXPOSE 8080
 
-# Start nginx
+# Start NGINX when the container launches
 CMD ["nginx", "-g", "daemon off;"]

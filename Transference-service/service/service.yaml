@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: transference-service
+  namespace: swiftpix
+  labels:
+    app: transference-service
+spec:
+  ports:
+    - name: 5010-tcp
+      protocol: TCP
+      port: 5010
+      targetPort: 5010
+  selector:
+    app: transference-service
+    deploymentconfig: transference-service
+  type: ClusterIP

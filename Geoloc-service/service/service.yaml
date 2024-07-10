@@ -1,0 +1,23 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: geoloc-service
+  namespace: swiftpix
+  labels:
+    app: geoloc-service
+    app.kubernetes.io/component: geoloc-service
+    app.kubernetes.io/instance: geoloc-service
+    app.kubernetes.io/name: geoloc-service
+    app.kubernetes.io/part-of: Triggers
+  annotations:
+    app.openshift.io/vcs-uri: 'https://github.com/SwiftPix/Geoloc-service'
+spec:
+  ports:
+    - name: 5020-tcp
+      protocol: TCP
+      port: 5020
+      targetPort: 5020
+  selector:
+    app: geoloc-service
+    deploymentconfig: geoloc-service
+  type: ClusterIP

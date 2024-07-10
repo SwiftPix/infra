@@ -1,0 +1,29 @@
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  name: user-service
+  namespace: swiftpix
+  labels:
+    app: user-service
+    app.kubernetes.io/component: user-service
+    app.kubernetes.io/instance: user-service
+    app.kubernetes.io/name: user-service
+    app.kubernetes.io/part-of: Triggers
+spec:
+  host: user-service.swiftpix.software
+  to:
+    kind: Service
+    name: user-service
+    weight: 100
+  port:
+    targetPort: 5000-tcp
+  tls:
+    termination: edge
+    insecureEdgeTerminationPolicy: Allow
+  wildcardPolicy: None
+status:
+  ingress:
+    - host: user-service.swiftpix.software
+      routerName: default
+      wildcardPolicy: None
+      routerCanonicalHostname: router-default.apps.cluster-lw92w.sandbox315.opentlc.com

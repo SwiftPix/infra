@@ -1,0 +1,17 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: user-service
+  namespace: swiftpix
+  labels:
+    app: user-service
+spec:
+  ports:
+    - name: 5000-tcp
+      protocol: TCP
+      port: 5000
+      targetPort: 5000
+  selector:
+    app: user-service
+    deploymentconfig: user-service
+  type: ClusterIP

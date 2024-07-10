@@ -1,0 +1,49 @@
+kind: DeploymentConfig
+apiVersion: apps.openshift.io/v1
+metadata:
+  name: transference-service
+  namespace: swiftpix
+  labels:
+    app: transference-service
+spec:
+  strategy:
+    type: Rolling
+    rollingParams:
+      updatePeriodSeconds: 1
+      intervalSeconds: 1
+      timeoutSeconds: 600
+      maxUnavailable: 25%
+      maxSurge: 25%
+    activeDeadlineSeconds: 21600
+  triggers:
+    - type: ImageChange
+      imageChangeParams:
+        automatic: true
+        containerNames:
+          - transference-service
+        from:
+          kind: ImageStreamTag
+          namespace: swiftpix
+          name: 'transference-service:latest'
+    - type: ConfigChange
+  replicas: 1
+  selector:
+    app: transference-service
+    deploymentconfig: transference-service
+  template:
+    metadata:
+      labels:
+        app: transference-service
+        deploymentconfig: transference-service
+    spec:
+      containers:
+        - name: transference-service
+          image: 'transference-service:latest'
+          envFrom:
+            - configMapRef:
+                name: transference-service
+          imagePullPolicy: Always
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 30
+      dnsPolicy: ClusterFirst
+      schedulerName: default-scheduler
